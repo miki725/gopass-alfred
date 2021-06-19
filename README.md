@@ -1,8 +1,10 @@
 # Gopass-Alfred
 
-Workflow to interact with gopass from [Alfred 3](https://www.alfredapp.com/workflows/) on MacOS. 
-You will need an Alfred 3 license in order to use workflows. 
+Workflow to interact with gopass from [Alfred 3](https://www.alfredapp.com/workflows/) on MacOS.
+You will need an Alfred 3 license in order to use workflows.
 Currently querying entries and copying username or password to clipboard is supported.
+Querying is done via shell scripts only.
+
 ## Screenshot
 
 ![gopass alfred screenshot](./screenshot.png)

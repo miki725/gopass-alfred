@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>bundleid</key>
-	<string>pw.gopass.alfred</string>
+	<string>pw.gopass-sh.alfred</string>
 	<key>category</key>
 	<string>Productivity</string>
 	<key>connections</key>
@@ -31,8 +31,58 @@
 				<false/>
 			</dict>
 		</array>
+		<key>46957D8C-9447-4931-88F5-3003CF0BE739</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E48AFC72-27D8-4EA4-B6BE-2D3D2E4D007C</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>498474E5-DE82-4947-803F-2C5FBAD6BC21</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>EAEF62BB-7FF8-4A3A-9F27-A2A0F7D0BF26</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>B1FF35DC-433E-4CCC-9CB3-7C8E1BC532F7</key>
-		<array/>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>498474E5-DE82-4947-803F-2C5FBAD6BC21</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>DB6BF0F4-4C45-43AF-9889-5E5E6CD8048F</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>46957D8C-9447-4931-88F5-3003CF0BE739</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
 	<string>Martin Hoefling</string>
@@ -52,26 +102,13 @@
 				<key>escaping</key>
 				<integer>68</integer>
 				<key>script</key>
-				<string>export PATH=/usr/local/bin:$PATH
+				<string>set -eo pipefail
 
-if [ -f ~/.gpg-agent-info ] &amp;&amp; [ -n "$(pgrep gpg-agent)" ]; then
-	source ~/.gpg-agent-info
-	export GPG_AGENT_INFO
-else
-	eval $(gpg-agent --daemon)
-fi
+export PATH=/usr/local/bin:$PATH
 
-export GPG_TTY="$(tty)"
-
-/usr/local/bin/gopass -c "{query}"
-
-RESULT=$?
-
-osascript -e 'display notification "Copied password for {query} to clipboard" with title "Gopass"'
-
-exit $RESULT</string>
+gopass --password "{query}"</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
@@ -87,10 +124,52 @@ exit $RESULT</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>46957D8C-9447-4931-88F5-3003CF0BE739</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string></string>
+				<key>title</key>
+				<string>Copied password</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>E48AFC72-27D8-4EA4-B6BE-2D3D2E4D007C</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
 				<integer>2</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
@@ -110,18 +189,50 @@ exit $RESULT</string>
 				<key>runningsubtext</key>
 				<string>loading gopass secrets</string>
 				<key>script</key>
-				<string>/usr/local/bin/gopass list -f &gt; /tmp/all
-</string>
+				<string>set -eo pipefail
+
+export PATH=/usr/local/bin:$PATH
+
+if [ -f ~/.gpg-agent-info ] &amp;&amp; [ -n "$(pgrep gpg-agent)" ]; then
+	source ~/.gpg-agent-info
+	export GPG_AGENT_INFO
+else
+	eval $(gpg-agent --daemon)
+fi
+
+export GPG_TTY="$(tty)"
+
+gopass list -f | python -c '
+import sys
+import re
+import json
+print(
+  json.dumps(
+    {
+      "items": [
+        {
+          "uid": result,
+          "title": result.split("/")[-1],
+          "subtitle": "/".join(result.split("/")[:-1]),
+          "arg": result,
+          "match": " ".join(set(re.split("[. /\-]", result))) + " " + result,
+          "autocomplete": result
+        } for result in sys.stdin.read().splitlines()
+      ]
+    },
+    indent=2,
+  )
+)'</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
-				<string>gopass_filter.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string>secret</string>
 				<key>title</key>
 				<string>Passwords from gopass</string>
 				<key>type</key>
-				<integer>8</integer>
+				<integer>0</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -130,7 +241,47 @@ exit $RESULT</string>
 			<key>uid</key>
 			<string>0D5132AE-3620-4D5F-BA72-EFD481455463</string>
 			<key>version</key>
-			<integer>2</integer>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string></string>
+				<key>title</key>
+				<string>Copied username</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>EAEF62BB-7FF8-4A3A-9F27-A2A0F7D0BF26</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>498474E5-DE82-4947-803F-2C5FBAD6BC21</string>
+			<key>version</key>
+			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -140,11 +291,13 @@ exit $RESULT</string>
 				<key>escaping</key>
 				<integer>68</integer>
 				<key>script</key>
-				<string>USER=$(./get_password.py {query} username)
-osascript -e 'display notification "Copied username '$USER'" with title "Gopass"'
-echo $USER | pbcopy</string>
+				<string>set -eo pipefail
+
+export PATH=/usr/local/bin:$PATH
+
+gopass show "{query}" | grep "^user:" | head -n1 | cut -d " " -f 2- | tr -d "\n"</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
@@ -165,25 +318,57 @@ echo $USER | pbcopy</string>
 		<key>0D5132AE-3620-4D5F-BA72-EFD481455463</key>
 		<dict>
 			<key>xpos</key>
-			<integer>80</integer>
+			<integer>50</integer>
 			<key>ypos</key>
 			<integer>20</integer>
+		</dict>
+		<key>46957D8C-9447-4931-88F5-3003CF0BE739</key>
+		<dict>
+			<key>xpos</key>
+			<integer>425</integer>
+			<key>ypos</key>
+			<integer>20</integer>
+		</dict>
+		<key>498474E5-DE82-4947-803F-2C5FBAD6BC21</key>
+		<dict>
+			<key>xpos</key>
+			<integer>425</integer>
+			<key>ypos</key>
+			<integer>160</integer>
 		</dict>
 		<key>B1FF35DC-433E-4CCC-9CB3-7C8E1BC532F7</key>
 		<dict>
 			<key>xpos</key>
-			<integer>250</integer>
+			<integer>265</integer>
 			<key>ypos</key>
 			<integer>160</integer>
 		</dict>
 		<key>DB6BF0F4-4C45-43AF-9889-5E5E6CD8048F</key>
 		<dict>
 			<key>xpos</key>
-			<integer>250</integer>
+			<integer>265</integer>
 			<key>ypos</key>
 			<integer>20</integer>
 		</dict>
+		<key>E48AFC72-27D8-4EA4-B6BE-2D3D2E4D007C</key>
+		<dict>
+			<key>xpos</key>
+			<integer>585</integer>
+			<key>ypos</key>
+			<integer>20</integer>
+		</dict>
+		<key>EAEF62BB-7FF8-4A3A-9F27-A2A0F7D0BF26</key>
+		<dict>
+			<key>xpos</key>
+			<integer>585</integer>
+			<key>ypos</key>
+			<integer>160</integer>
+		</dict>
 	</dict>
+	<key>variablesdontexport</key>
+	<array/>
+	<key>version</key>
+	<string></string>
 	<key>webaddress</key>
 	<string>https://www.gopass.pw</string>
 </dict>
