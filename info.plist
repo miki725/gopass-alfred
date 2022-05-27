@@ -108,7 +108,7 @@ export PATH=/usr/local/bin:$PATH
 
 gopass --password "{query}"</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
@@ -297,7 +297,7 @@ export PATH=/usr/local/bin:$PATH
 
 gopass show "{query}" | grep "^user:" | head -n1 | cut -d " " -f 2- | tr -d "\n"</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>type</key>
