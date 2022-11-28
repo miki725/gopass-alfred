@@ -30,6 +30,42 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>2C949774-CE72-46D4-BCE9-168736D6B35B</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>copy totp token</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>11965250-951F-4483-82C7-E1744DC15C2B</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>A426B1A9-3954-4A13-992C-B8DD67026477</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>2C949774-CE72-46D4-BCE9-168736D6B35B</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>11965250-951F-4483-82C7-E1744DC15C2B</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
 		</array>
 		<key>46957D8C-9447-4931-88F5-3003CF0BE739</key>
 		<array>
@@ -49,6 +85,19 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>EAEF62BB-7FF8-4A3A-9F27-A2A0F7D0BF26</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>A426B1A9-3954-4A13-992C-B8DD67026477</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>7670F5C8-FDF8-41B9-AD4A-E2DE0B37DE63</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -202,7 +251,7 @@ fi
 
 export GPG_TTY="$(tty)"
 
-gopass list -f | python -c '
+gopass list -f | python3 -c '
 import sys
 import re
 import json
@@ -310,6 +359,94 @@ gopass show "{query}" | grep "^user:" | head -n1 | cut -d " " -f 2- | tr -d "\n"
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string></string>
+				<key>title</key>
+				<string>Copied username</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>A426B1A9-3954-4A13-992C-B8DD67026477</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>11965250-951F-4483-82C7-E1744DC15C2B</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>count</key>
+				<integer>1</integer>
+				<key>keychar</key>
+				<string>v</string>
+				<key>keycode</key>
+				<integer>-1</integer>
+				<key>keymod</key>
+				<integer>1048576</integer>
+				<key>overridewithargument</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.dispatchkeycombo</string>
+			<key>uid</key>
+			<string>7670F5C8-FDF8-41B9-AD4A-E2DE0B37DE63</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>set -eo pipefail
+
+export PATH=/usr/local/bin:$PATH
+
+gopass totp --password "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>2C949774-CE72-46D4-BCE9-168736D6B35B</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
@@ -321,6 +458,20 @@ gopass show "{query}" | grep "^user:" | head -n1 | cut -d " " -f 2- | tr -d "\n"
 			<integer>50</integer>
 			<key>ypos</key>
 			<integer>20</integer>
+		</dict>
+		<key>11965250-951F-4483-82C7-E1744DC15C2B</key>
+		<dict>
+			<key>xpos</key>
+			<integer>425</integer>
+			<key>ypos</key>
+			<integer>295</integer>
+		</dict>
+		<key>2C949774-CE72-46D4-BCE9-168736D6B35B</key>
+		<dict>
+			<key>xpos</key>
+			<integer>265</integer>
+			<key>ypos</key>
+			<integer>295</integer>
 		</dict>
 		<key>46957D8C-9447-4931-88F5-3003CF0BE739</key>
 		<dict>
@@ -335,6 +486,20 @@ gopass show "{query}" | grep "^user:" | head -n1 | cut -d " " -f 2- | tr -d "\n"
 			<integer>425</integer>
 			<key>ypos</key>
 			<integer>160</integer>
+		</dict>
+		<key>7670F5C8-FDF8-41B9-AD4A-E2DE0B37DE63</key>
+		<dict>
+			<key>xpos</key>
+			<integer>745</integer>
+			<key>ypos</key>
+			<integer>295</integer>
+		</dict>
+		<key>A426B1A9-3954-4A13-992C-B8DD67026477</key>
+		<dict>
+			<key>xpos</key>
+			<integer>585</integer>
+			<key>ypos</key>
+			<integer>295</integer>
 		</dict>
 		<key>B1FF35DC-433E-4CCC-9CB3-7C8E1BC532F7</key>
 		<dict>
